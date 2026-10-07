@@ -23,21 +23,31 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Assemble site files from _parts
+      - name: Assemble site files
         run: |
           python3 << 'PY'
-          import json
+          import base64, json, zlib
           from pathlib import Path
+
           parts_dir = Path("_parts")
-          manifest_path = parts_dir / "manifest.json"
-          if manifest_path.exists():
-              manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-              for name, parts in manifest.items():
-                  text = "".join((parts_dir / p).read_text(encoding="utf-8") for p in parts)
+          n_path = parts_dir / "site.zlib.b64.n"
+          if n_path.exists():
+              n = int(n_path.read_text().strip())
+              b64 = "".join((parts_dir / f"site.zlib.b64.{i}").read_text().strip() for i in range(n))
+              data = json.loads(zlib.decompress(base64.b64decode(b64)).decode("utf-8"))
+              for name, text in data.items():
                   Path(name).write_text(text, encoding="utf-8")
-                  print(f"assembled {name} ({len(text)} chars) from {len(parts)} parts")
+                  print(f"assembled {name} ({len(text)} chars) from zlib blob")
           else:
-              print("no _parts/manifest.json — using checked-in files as-is")
+              manifest_path = parts_dir / "manifest.json"
+              if manifest_path.exists():
+                  manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+                  for name, parts in manifest.items():
+                      text = "".join((parts_dir / p).read_text(encoding="utf-8") for p in parts)
+                      Path(name).write_text(text, encoding="utf-8")
+                      print(f"assembled {name} ({len(text)} chars) from {len(parts)} parts")
+              else:
+                  print("no _parts assembly sources — using checked-in files as-is")
           PY
       - name: Setup Pages
         uses: actions/configure-pages@v5
