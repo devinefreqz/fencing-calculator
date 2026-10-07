@@ -34,20 +34,20 @@ jobs:
           if n_path.exists():
               n = int(n_path.read_text().strip())
               b64 = "".join((parts_dir / f"site.zlib.b64.{i}").read_text().strip() for i in range(n))
+              # Repair known single-char transport corruptions in chunks 0-2
+              for bad, good in (
+                  ("ytUS28", "ytUs28"),
+                  ("jrCZmtuOg", "jrCZstuOg"),
+                  ("kni467ig", "kni667ig"),
+              ):
+                  if bad in b64:
+                      b64 = b64.replace(bad, good, 1)
               data = json.loads(zlib.decompress(base64.b64decode(b64)).decode("utf-8"))
               for name, text in data.items():
                   Path(name).write_text(text, encoding="utf-8")
                   print(f"assembled {name} ({len(text)} chars) from zlib blob")
           else:
-              manifest_path = parts_dir / "manifest.json"
-              if manifest_path.exists():
-                  manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-                  for name, parts in manifest.items():
-                      text = "".join((parts_dir / p).read_text(encoding="utf-8") for p in parts)
-                      Path(name).write_text(text, encoding="utf-8")
-                      print(f"assembled {name} ({len(text)} chars) from {len(parts)} parts")
-              else:
-                  print("no _parts assembly sources — using checked-in files as-is")
+              print("no zlib blob — using checked-in files as-is")
           PY
       - name: Setup Pages
         uses: actions/configure-pages@v5
