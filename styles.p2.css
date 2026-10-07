@@ -1,0 +1,239 @@
+
+
+.segmented {
+  display: inline-flex;
+  background: var(--slate-100);
+  border-radius: 999px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.seg-btn {
+  min-height: 32px;
+  min-width: 44px;
+  padding: 0.25rem 0.7rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--slate-700);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.seg-btn.is-active {
+  background: var(--white);
+  color: var(--green-900);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.1);
+}
+
+.input-with-unit {
+  display: flex;
+  align-items: stretch;
+  border: 2px solid var(--slate-300);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input-with-unit:focus-within {
+  border-color: var(--green-700);
+  box-shadow: 0 0 0 3px rgb(45 99 72 / 0.25);
+}
+
+.input-with-unit input {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--touch);
+  border: none;
+  outline: none;
+  padding: 0.65rem 0.9rem;
+  font: inherit;
+  font-size: 1.125rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  background: transparent;
+  color: var(--slate-900);
+  -moz-appearance: textfield;
+}
+
+.input-with-unit input::-webkit-outer-spin-button,
+.input-with-unit input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.unit-suffix {
+  display: grid;
+  place-items: center;
+  padding: 0 0.9rem;
+  background: var(--slate-100);
+  color: var(--slate-700);
+  font-weight: 650;
+  font-size: 0.875rem;
+  border-left: 1px solid var(--slate-200);
+  min-width: 3.5rem;
+  white-space: nowrap;
+}
+
+.hint {
+  margin: 0.45rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--slate-500);
+}
+
+/* Height chips */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.chip-btn {
+  min-height: 40px;
+  padding: 0.35rem 0.85rem;
+  border: 2px solid var(--slate-300);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--slate-700);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.chip-btn.is-active {
+  border-color: var(--green-700);
+  background: var(--green-100);
+  color: var(--green-900);
+}
+
+/* Toggle */
+.field-toggle .toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: var(--touch);
+  margin-bottom: 0;
+  cursor: pointer;
+  font-weight: 650;
+}
+
+.field-toggle input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--green-700);
+  flex-shrink: 0;
+}
+
+/* —— Results —— */
+.result-hero {
+  text-align: center;
+  padding: 0.5rem 0 1rem;
+  border-bottom: 1px solid var(--slate-200);
+  margin-bottom: 1rem;
+}
+
+.result-label {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--slate-500);
+}
+
+.result-value {
+  margin: 0.25rem 0 0;
+  font-size: clamp(2rem, 8vw, 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--green-900);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.result-sub {
+  margin: 0.35rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--slate-700);
+  font-weight: 500;
+}
+
+
+.result-hero-secondary {
+  border-bottom: 1px solid var(--slate-200);
+  margin-bottom: 1rem;
+  padding-top: 0;
+}
+
+.result-value-sm {
+  font-size: clamp(1.35rem, 5vw, 1.85rem);
+}
+
+#sp-timber-wrap,
+#mat-timber-wrap {
+  margin-top: 0.25rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  background: var(--slate-50, #f8fafc);
+  border: 1px solid var(--slate-200);
+}
+
+#mat-timber-wrap .field:last-child {
+  margin-bottom: 0;
+}
+
+.result-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  background: var(--green-100);
+  color: var(--green-900);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.rounding-note,
+.assumption-note {
+  background: var(--amber-100);
+  color: #92400e;
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 0.9rem;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  border: 1px solid #fcd34d;
+}
+
+.assumption-note {
+  background: var(--green-100);
+  color: var(--green-950);
+  border-color: #a7d4b8;
+  margin-bottom: 0;
+  margin-top: 0.25rem;
+}
+
+.rounding-note strong,
+.assumption-note strong {
+  font-weight: 700;
+}
+
+/* Materials qty grid */
+.qty-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
