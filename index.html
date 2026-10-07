@@ -1,27 +1,38 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#1a3a2a" />
-  <meta name="description" content="Fencing Calculator — Colourbond step-downs, post spacing & materials take-off for Aussie tradies." />
+  <meta name="description" content="Fencing Calculator &mdash; Colourbond step-downs, post spacing &amp; materials take-off for Aussie tradies." />
   <title>Fencing Calculator</title>
   <script>
-  (async function () {
-    var n = 40;
-    var parts = [];
-    for (var i = 0; i < n; i++) {
-      var r = await fetch("/fencing-calculator/index.r" + i + ".txt?v=8");
-      parts.push(await r.text());
-    }
-    var html = atob(parts.join(""));
-    document.open();
-    document.write(html);
-    document.close();
+  (function () {
+    var n = 29;
+    var urls = [];
+    for (var i = 0; i < n; i++) urls.push("/fencing-calculator/index.s" + i + ".txt?v=9");
+    Promise.all(urls.map(function (u) {
+      return fetch(u).then(function (r) {
+        if (!r.ok) throw new Error(u + " " + r.status);
+        return r.text();
+      });
+    })).then(function (parts) {
+      /* atob() gives Latin-1 "binary" text; decode the bytes as UTF-8 */
+      var bin = atob(parts.join("").replace(/\s+/g, ""));
+      var bytes = new Uint8Array(bin.length);
+      for (var j = 0; j < bin.length; j++) bytes[j] = bin.charCodeAt(j);
+      var html = new TextDecoder("utf-8").decode(bytes);
+      document.open();
+      document.write(html);
+      document.close();
+    }).catch(function (e) {
+      console.error("Fencing calculator failed to load", e);
+      document.body.textContent = "Couldn't load the calculator. Please refresh.";
+    });
   })();
   </script>
 </head>
 <body>
-  <p style="font-family:system-ui;padding:1.5rem;color:#334155">Loading calculator…</p>
+  <p style="font-family:system-ui;padding:1.5rem;color:#334155">Loading calculator&hellip;</p>
 </body>
 </html>
