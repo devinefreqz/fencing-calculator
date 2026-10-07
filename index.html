@@ -1,1 +1,27 @@
-PLACEHOLDER
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1a3a2a" />
+  <meta name="description" content="Fencing Calculator — Colourbond step-downs, post spacing & materials take-off for Aussie tradies." />
+  <title>Fencing Calculator</title>
+  <script>
+  (async function () {
+    var n = 40;
+    var parts = [];
+    for (var i = 0; i < n; i++) {
+      var r = await fetch("/fencing-calculator/index.r" + i + ".txt?v=8");
+      parts.push(await r.text());
+    }
+    var html = atob(parts.join(""));
+    document.open();
+    document.write(html);
+    document.close();
+  })();
+  </script>
+</head>
+<body>
+  <p style="font-family:system-ui;padding:1.5rem;color:#334155">Loading calculator…</p>
+</body>
+</html>
