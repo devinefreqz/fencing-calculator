@@ -4,6 +4,25 @@ Mobile-first web app for fencing measurements. **v1** is a Colourbond step-down 
 
 Colourbond fences stay plumb and level — they don’t rake with the ground. Fall is taken in **equal vertical steps** at each bay.
 
+## Live site
+
+**https://devinefreqz.github.io/fencing-calculator/**
+
+### Enable GitHub Pages (one-time)
+
+Pages isn’t on yet — do either:
+
+**Option A — Deploy from branch (simplest)**  
+1. Open [Settings → Pages](https://github.com/devinefreqz/fencing-calculator/settings/pages)  
+2. Under **Build and deployment** → **Source**, choose **Deploy from a branch**  
+3. Branch: **main** / folder: **/ (root)** → Save  
+4. Wait ~1 minute, then open the live URL above
+
+**Option B — GitHub Actions**  
+1. Same Pages settings → Source: **GitHub Actions**  
+2. Re-run the **Deploy to GitHub Pages** workflow under Actions  
+3. When it goes green, open the live URL
+
 ## Formula
 
 ```
@@ -27,10 +46,6 @@ python3 -m http.server 8080
 ```
 
 Then open http://localhost:8080
-
-## Live site
-
-Once GitHub Pages is enabled: https://devinefreqz.github.io/fencing-calculator/
 
 ## Files
 
