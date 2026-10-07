@@ -23,32 +23,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Assemble site files
-        run: |
-          python3 << 'PY'
-          import base64, json, zlib
-          from pathlib import Path
-
-          parts_dir = Path("_parts")
-          n_path = parts_dir / "site.zlib.b64.n"
-          if n_path.exists():
-              n = int(n_path.read_text().strip())
-              b64 = "".join((parts_dir / f"site.zlib.b64.{i}").read_text().strip() for i in range(n))
-              # Repair known single-char transport corruptions in chunks 0-2
-              for bad, good in (
-                  ("ytUS28", "ytUs28"),
-                  ("jrCZmtuOg", "jrCZstuOg"),
-                  ("kni467ig", "kni667ig"),
-              ):
-                  if bad in b64:
-                      b64 = b64.replace(bad, good, 1)
-              data = json.loads(zlib.decompress(base64.b64decode(b64)).decode("utf-8"))
-              for name, text in data.items():
-                  Path(name).write_text(text, encoding="utf-8")
-                  print(f"assembled {name} ({len(text)} chars) from zlib blob")
-          else:
-              print("no zlib blob — using checked-in files as-is")
-          PY
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
