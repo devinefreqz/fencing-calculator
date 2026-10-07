@@ -1,1 +1,1 @@
-LOADING_FROM_WORKSPACE_APP_JS
+{{FILE:/workspace/fencing-calculator/app.js}}
