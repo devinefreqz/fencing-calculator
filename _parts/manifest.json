@@ -1,0 +1,27 @@
+{
+  "index.html": [
+    "index.html.0.part",
+    "index.html.1.part",
+    "index.html.2.part",
+    "index.html.3.part",
+    "index.html.4.part"
+  ],
+  "styles.css": [
+    "styles.css.0.part",
+    "styles.css.1.part",
+    "styles.css.2.part",
+    "styles.css.3.part"
+  ],
+  "app.js": [
+    "app.js.0.part",
+    "app.js.1.part",
+    "app.js.2.part",
+    "app.js.3.part",
+    "app.js.4.part",
+    "app.js.5.part",
+    "app.js.6.part",
+    "app.js.7.part",
+    "app.js.8.part",
+    "app.js.9.part"
+  ]
+}
