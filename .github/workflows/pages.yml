@@ -23,10 +23,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Assemble site files from _parts
+        run: |
+          python3 << 'PY'
+          import json
+          from pathlib import Path
+          parts_dir = Path("_parts")
+          manifest_path = parts_dir / "manifest.json"
+          if manifest_path.exists():
+              manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+              for name, parts in manifest.items():
+                  text = "".join((parts_dir / p).read_text(encoding="utf-8") for p in parts)
+                  Path(name).write_text(text, encoding="utf-8")
+                  print(f"assembled {name} ({len(text)} chars) from {len(parts)} parts")
+          else:
+              print("no _parts/manifest.json — using checked-in files as-is")
+          PY
       - name: Setup Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
