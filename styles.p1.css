@@ -1,4 +1,4 @@
-/* Fencing Calculator — mobile-first, high contrast, tradie-friendly */
+/* Fencing Calculator -- mobile-first, high contrast, tradie-friendly */
 
 :root {
   --green-950: #0f2419;
@@ -75,7 +75,7 @@ body {
   border: 0;
 }
 
-/* —— Header —— */
+/* ---- Header ---- */
 .site-header {
   background: var(--green-900);
   color: var(--white);
@@ -120,7 +120,7 @@ body {
   font-weight: 500;
 }
 
-/* —— Tool nav —— */
+/* ---- Tool nav ---- */
 .tool-nav {
   background: var(--green-800);
   border-bottom: 1px solid rgb(255 255 255 / 0.08);
@@ -172,7 +172,7 @@ body {
   outline-offset: 2px;
 }
 
-/* —— Main —— */
+/* ---- Main ---- */
 .main {
   flex: 1;
   width: 100%;
@@ -204,7 +204,7 @@ body {
   font-size: 0.9375rem;
 }
 
-/* —— Cards —— */
+/* ---- Cards ---- */
 .card {
   background: var(--white);
   border-radius: var(--radius);
@@ -223,7 +223,7 @@ body {
   color: var(--slate-500);
 }
 
-/* —— Fields —— */
+/* ---- Fields ---- */
 .field {
   margin-bottom: 1.25rem;
 }

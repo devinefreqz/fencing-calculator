@@ -1,5 +1,4 @@
 
-
 .qty-card {
   background: var(--green-50);
   border: 1px solid var(--slate-200);
@@ -36,7 +35,7 @@
   color: var(--slate-500);
 }
 
-/* —— Diagram —— */
+/* ---- Diagram ---- */
 .diagram-wrap {
   background: linear-gradient(180deg, #f8fafc 0%, #eef2f6 100%);
   border-radius: var(--radius-sm);
@@ -63,7 +62,7 @@
   text-align: center;
 }
 
-/* —— Table —— */
+/* ---- Table ---- */
 .table-title {
   margin-bottom: 0.35rem;
 }
@@ -128,7 +127,7 @@
   font-style: italic;
 }
 
-/* —— Empty / error —— */
+/* ---- Empty / error ---- */
 .empty-card,
 .error-card {
   text-align: center;
@@ -169,7 +168,7 @@
   color: #7f1d1d;
 }
 
-/* —— How it works —— */
+/* ---- How it works ---- */
 .how-it-works {
   background: var(--white);
   border: 1px solid var(--slate-200);
@@ -203,7 +202,7 @@
 }
 
 .how-it-works[open] summary::after {
-  content: "−";
+  content: "\2212";
 }
 
 .how-body {
@@ -227,7 +226,7 @@
   color: var(--green-950);
 }
 
-/* —— Footer —— */
+/* ---- Footer ---- */
 .site-footer {
   text-align: center;
   padding: 1rem;
@@ -240,7 +239,7 @@
   margin: 0;
 }
 
-/* —— Desktop —— */
+/* ---- Desktop ---- */
 @media (min-width: 640px) {
   .site-header {
     padding: 1.25rem 1.5rem;
