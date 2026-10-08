@@ -8,9 +8,9 @@
   <title>Fencing Calculator</title>
   <script>
   (function () {
-    var n = 30;
+    var n = 32;
     var urls = [];
-    for (var i = 0; i < n; i++) urls.push("/fencing-calculator/index.u" + i + ".txt?v=10");
+    for (var i = 0; i < n; i++) urls.push("/fencing-calculator/index.w" + i + ".txt?v=11");
     Promise.all(urls.map(function (u) {
       return fetch(u).then(function (r) {
         if (!r.ok) throw new Error(u + " " + r.status);
