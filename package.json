@@ -1,0 +1,9 @@
+{
+  "name": "fencing-quotes",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/calc.test.mjs tests/quote-store.test.mjs",
+    "start": "python3 -m http.server 8080"
+  }
+}
