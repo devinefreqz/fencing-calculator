@@ -1,38 +1,798 @@
 <!DOCTYPE html>
 <html lang="en-AU">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#1a3a2a" />
-  <meta name="description" content="Fencing Calculator &mdash; Colourbond step-downs, post spacing &amp; materials take-off for Aussie tradies." />
-  <title>Fencing Calculator</title>
-  <script>
-  (function () {
-    var n = 51;
-    var urls = [];
-    for (var i = 0; i < n; i++) urls.push("/fencing-calculator/index.x" + i + ".txt?v=12");
-    Promise.all(urls.map(function (u) {
-      return fetch(u).then(function (r) {
-        if (!r.ok) throw new Error(u + " " + r.status);
-        return r.text();
-      });
-    })).then(function (parts) {
-      /* atob() gives Latin-1 "binary" text; decode the bytes as UTF-8 */
-      var bin = atob(parts.join("").replace(/\s+/g, ""));
-      var bytes = new Uint8Array(bin.length);
-      for (var j = 0; j < bin.length; j++) bytes[j] = bin.charCodeAt(j);
-      var html = new TextDecoder("utf-8").decode(bytes);
-      document.open();
-      document.write(html);
-      document.close();
-    }).catch(function (e) {
-      console.error("Fencing calculator failed to load", e);
-      document.body.textContent = "Couldn't load the calculator. Please refresh.";
-    });
-  })();
-  </script>
+  <meta name="description" content="Fence quotes and calculators for Colourbond step-downs and timber paling. Saved on this device only." />
+  <title>Fencing quotes</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231a3a2a'/%3E%3Crect x='3' y='3' width='3' height='10' fill='%23a7d4b8'/%3E%3Crect x='10' y='6' width='3' height='7' fill='%23c4a574'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <p style="font-family:system-ui;padding:1.5rem;color:#334155">Loading calculator&hellip;</p>
+  <a class="skip-link" href="#quotes-root">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner header-wide">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">&#x25AE;</span>
+        <div>
+          <h1>Fencing quotes</h1>
+          <p class="tagline">Colourbond &amp; timber paling &middot; this device only</p>
+        </div>
+      </div>
+    </div>
+  </header>
+  <nav class="app-nav" aria-label="Sections">
+    <div class="app-nav-inner">
+      <button type="button" class="tool-tab is-active" id="nav-quotes">Quotes</button>
+      <button type="button" class="tool-tab" id="nav-calculators">Calculators</button>
+    </div>
+  </nav>
+  <p id="status-live" class="status-live" role="status"></p>
+  <div id="quotes-root"></div>
+  <div id="calculators-root" hidden>
+<nav class="calc-nav" aria-label="Calculators">
+    <div class="tool-nav-inner">
+      <button type="button" class="tool-tab is-active" aria-current="page" data-tool="stepdown">
+        Step-downs
+      </button>
+      <button type="button" class="tool-tab" data-tool="materials">
+        Materials
+      </button>
+      <button type="button" class="tool-tab" data-tool="spacing">
+        Post spacing
+      </button>
+      <button type="button" class="tool-tab" data-tool="timber">
+        Timber fence
+      </button>
+    </div>
+  </nav>
+<main id="calc-main" class="main">
+    <!-- ========== STEP-DOWNS ========== -->
+    <section class="tool-panel is-active" data-panel="stepdown" aria-labelledby="stepdown-title">
+      <header class="panel-header">
+        <h2 id="stepdown-title">Colourbond step-downs</h2>
+        <p class="panel-lead">
+          Panels stay level, posts stay plumb. Fall is taken in equal steps at each bay.
+        </p>
+      </header>
+
+      <div class="card inputs-card">
+        <h3 class="card-title">Your run</h3>
+
+        <div class="field">
+          <div class="field-label-row">
+            <label for="fall">Total fall</label>
+            <div class="segmented" role="group" aria-label="Fall unit">
+              <button type="button" class="seg-btn is-active" data-unit="mm" id="unit-mm">mm</button>
+              <button type="button" class="seg-btn" data-unit="m" id="unit-m">m</button>
+            </div>
+          </div>
+          <div class="input-with-unit">
+            <input
+              type="number"
+              id="fall"
+              inputmode="decimal"
+              min="0"
+              step="any"
+              placeholder="e.g. 240"
+              autocomplete="off"
+            />
+            <span class="unit-suffix" id="fall-unit-label">mm</span>
+          </div>
+          <p class="hint">Height difference from the high end to the low end of the run.</p>
+        </div>
+
+        <div class="field">
+          <div class="field-label-row">
+            <span class="label-text" id="count-label">Number of posts</span>
+            <div class="segmented" role="group" aria-label="Count by">
+              <button type="button" class="seg-btn is-active" data-count="posts" id="count-posts">Posts</button>
+              <button type="button" class="seg-btn" data-count="bays" id="count-bays">Bays</button>
+            </div>
+          </div>
+          <div class="input-with-unit">
+            <input
+              type="number"
+              id="count"
+              inputmode="numeric"
+              min="1"
+              step="1"
+              placeholder="e.g. 5"
+              autocomplete="off"
+            />
+            <span class="unit-suffix" id="count-suffix">posts</span>
+          </div>
+          <p class="hint" id="count-hint">Steps = posts &minus; 1 (one step per bay).</p>
+        </div>
+
+        <div class="field field-toggle">
+          <label class="toggle-label" for="sd-timber">
+            <input type="checkbox" id="sd-timber" />
+            <span>Timber posts</span>
+          </label>
+          <p class="hint">Colourbond posts fixed to timber posts. Shows timber posts in the diagram (step height doesn&rsquo;t change).</p>
+        </div>
+
+        <div class="field" id="sd-timber-wrap" hidden>
+          <label for="sd-timber-size">Timber post width</label>
+          <div class="input-with-unit">
+            <input
+              type="number"
+              id="sd-timber-size"
+              inputmode="numeric"
+              min="1"
+              step="1"
+              value="100"
+              placeholder="e.g. 100"
+              autocomplete="off"
+            />
+            <span class="unit-suffix">mm</span>
+          </div>
+          <p class="hint">Same timber setting as Post spacing &amp; Materials.</p>
+        </div>
+
+        <div class="field field-toggle">
+          <label class="toggle-label" for="sd-eqpost">
+            <input type="checkbox" id="sd-eqpost" />
+            <span>Posts same height above ground</span>
+          </label>
+          <p class="hint">Post tops follow the fall instead of finishing just above each stepped panel. Steps don&rsquo;t change.</p>
+        </div>
+
+        <div class="field" id="sd-eqpost-wrap" hidden>
+          <label for="sd-eqpost-height">Post height above ground</label>
+          <div class="input-with-unit">
+            <input
+              type="number"
+              id="sd-eqpost-height"
+              inputmode="numeric"
+              min="1"
+              step="1"
+              value="2100"
+              placeholder="e.g. 2100"
+              autocomplete="off"
+            />
+            <span class="unit-suffix">mm</span>
+          </div>
+          <p class="hint">Same for every post, measured from its own ground. 2100 = 1800 panel + 150 plinth + 150 above the panel at the high end.</p>
+        </div>
+      </div>
+
+      <div class="card results-card" id="results" hidden>
+        <h3 class="card-title">Equal step</h3>
+
+        <div class="result-hero" id="result-hero">
+          <p class="result-label">Step height</p>
+          <p class="result-value" id="step-display">&mdash;</p>
+          <p class="result-sub" id="step-sub"></p>
+        </div>
+
+        <div class="result-meta" id="result-meta"></div>
+
+        <div class="rounding-note" id="rounding-note" hidden></div>
+
+        <div class="diagram-wrap" aria-hidden="true">
+          <svg id="diagram" class="diagram" viewBox="0 0 400 180" role="img"></svg>
+        </div>
+        <p class="diagram-caption" id="diagram-caption"></p>
+
+        <div class="table-wrap">
+          <h3 class="card-title table-title">Drop at each post</h3>
+          <p class="hint table-hint">Post 1 is the high end (0 drop). Cumulative drop down the run.</p>
+          <div class="table-scroll">
+            <table class="drop-table" id="drop-table">
+              <thead>
+                <tr>
+                  <th scope="col">Post</th>
+                  <th scope="col">Cumulative drop</th>
+                  <th scope="col">Step from previous</th>
+                  <th scope="col" id="sd-clear-th" hidden>Top above panel</th>
+                </tr>
+              </thead>
+              <tbody id="drop-body"></tbody>
+            </table>
+          </div>
+          <div class="assumption-note" id="sd-posttop-note" style="margin-top:0.75rem" hidden></div>
+        </div>
+      </div>
+
+      <div class="card empty-card" id="empty-state">
+        <p class="empty-icon" aria-hidden="true">&darr;</p>
+        <p class="empty-title">Enter fall and posts (or bays)</p>
+        <p class="empty-body">You&rsquo;ll get equal step height, a drop table, and a simple diagram.</p>
+      </div>
+
+      <div class="card error-card" id="error-state" hidden>
+        <p class="error-title" id="error-title">Check your numbers</p>
+        <p class="error-body" id="error-body"></p>
+      </div>
+
+      <details class="how-it-works">
+        <summary>How it works</summary>
+        <div class="how-body">
+          <p>
+            Colourbond fences can&rsquo;t rake with the ground. Posts stay <strong>plumb</strong> (perfectly vertical)
+            and panels stay <strong>level</strong>. Any fall is taken as equal vertical steps at each bay.
+          </p>
+          <p class="formula">
+            <strong>Step height</strong> = total fall &divide; (posts &minus; 1)
+          </p>
+          <p>
+            Number of steps = number of bays = posts &minus; 1. Each step is the same measurement so the fence
+            looks even down the run.
+          </p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ========== POST SPACING ========== -->
+    <section class="tool-panel" data-panel="spacing" aria-labelledby="spacing-title" hidden>
+      <header class="panel-header">
+        <h2 id="spacing-title">Post spacing</h2>
+        <p class="panel-lead">
+          Equal centres along the run &mdash; never over your max bay width.
+        </p>
+      </header>
+
+      <div class="card inputs-card">
+        <h3 class="card-title">Your run</h3>
+
+        <div class="field">
+          <div class="field-label-row">
+            <label for="sp-length">Total run length</label>
+            <div class="segmented" role="group" aria-label="Length unit">
+              <button type="button" class="seg-btn is-active" data-sp-unit="m" id="sp-unit-m">m</button>
+              <button type="button" class="seg-btn" data-sp-unit="mm" id="sp-unit-mm">mm</button>
+            </div>
+          </div>
+          <div class="input-with-unit">
+            <input
+              type="number"
+              id="sp-length"
+              inputmode="decimal"
+              min="0"
+              step="any"
+              placeholder="e.g. 12"
+              autocomplete="off"
+            />
+            <span class="unit-suffix" id="sp-length-unit">m</span>
+          </div>
+          <p class="hint">Straight-line length of the fence run.</p>
+        </div>
+
+        <div class="field">
+          <label for="sp-maxbay">Max bay / post centres</label>
+          <div class="input-with-unit">
+            <input
+              type="number"
+              id="sp-maxbay"
+              inputmode="decimal"
+              min="0"
+              step="any"
+              placeholder="e.g. 2.4"
+              autocomplete="off"
+            />
+            <span class="unit-suffix">m</span>
+          </div>
+          <p class="hint" id="sp-maxbay-hint">Your maximum post centres &mdash; centres will never exceed this.</p>
+        </div>
+
+        <div class="field field-toggle">
+          <label class="toggle-label" for="sp-timber">
+            <input type="checkbox" id="sp-timber" />
+            <span>Colourbond posts on timber</span>
+          </label>
+          <p class="hint">100&times;100 timber posts with Colourbond posts fixed on. Max bay stays timber centres.</p>
+        </div>
+
+        <div class="field" id="sp-timber-wrap" hidden>
+          <label for="sp-timber-size">Timber post size</label>
+          <div class="input-with-unit">
+            <input
+              type="number"
+              id="sp-timber-size"
+              inputmode="numeric"
+              min="1"
+              step="1"
+              value="100"
+              placeholder="e.g. 100"
+              autocomplete="off"
+            />
+            <span class="unit-suffix">mm sq</span>
+          </div>
+          <p class="hint">Square section. Clear bay / rail length &asymp; centres &minus; timber width.</p>
+        </div>
+      </div>
+
+      <div class="card results-card" id="sp-results" hidden>
+        <h3 class="card-title">Equal centres</h3>
+
+        <div class="result-hero">
+          <p class="result-label">Bay width (centres)</p>
+          <p class="result-value" id="sp-centres-display">&mdash;</p>
+          <p class="result-sub" id="sp-centres-sub"></p>
+        </div>
+
+        <div class="result-hero result-hero-secondary" id="sp-clear-hero" hidden>
+          <p class="result-label">Clear bay / rail length</p>
+          <p class="result-value result-value-sm" id="sp-clear-display">&mdash;</p>
+          <p class="result-sub" id="sp-clear-sub">Rails/panels span the clear opening between timber faces.</p>
+        </div>
+
+        <div class="result-meta" id="sp-result-meta"></div>
+
+        <div class="diagram-wrap" aria-hidden="true">
+          <svg id="sp-diagram" class="diagram diagram-spacing" viewBox="0 0 400 100" role="img"></svg>
+        </div>
+        <p class="diagram-caption" id="sp-diagram-caption"></p>
+
+        <div class="table-wrap">
+          <h3 class="card-title table-title">Post positions</h3>
+          <p class="hint table-hint">Distance from start of run (Post 1 at 0).</p>
+          <div class="table-scroll">
+            <table class="drop-table" id="sp-table">
+              <thead>
+                <tr>
+                  <th scope="col">Post</th>
+                  <th scope="col">Position</th>
+                  <th scope="col">From previous</th>
+                </tr>
+              </thead>
+              <tbody id="sp-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card empty-card" id="sp-empty">
+        <p class="empty-icon" aria-hidden="true">&#x22A2;&#x22A3;</p>
+        <p class="empty-title">Enter run length and max bay</p>
+        <p class="empty-body">You&rsquo;ll get equal centres, post count, and positions along the run.</p>
+      </div>
+
+      <div class="card error-card" id="sp-error" hidden>
+        <p class="error-title" id="sp-error-title">Check your numbers</p>
+        <p class="error-body" id="sp-error-body"></p>
+      </div>
+
+      <details class="how-it-works">
+        <summary>How it works</summary>
+        <div class="how-body">
+          <p>
+            Split the run into the fewest equal bays that stay within your max centres.
+          </p>
+          <p class="formula">
+            <strong>Bays</strong> = ceil(length &divide; max bay)<br />
+            <strong>Centres</strong> = length &divide; bays<br />
+            <strong>Posts</strong> = bays + 1
+          </p>
+          <p>
+            That keeps every bay the same width and never over your maximum.
+          </p>
+          <p>
+            With <strong>Colourbond posts on timber</strong>, centres are still timber-to-timber.
+            Clear bay (rail/panel piece length) &asymp; centres &minus; timber width.
+          </p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ========== MATERIALS ========== -->
+    <section class="tool-panel" data-panel="materials" aria-labelledby="materials-title" hidden>
+      <header class="panel-header">
+        <h2 id="materials-title">Materials take-off</h2>
+        <p class="panel-lead">
+          Panels, posts + caps, and rails for a Colourbond run. No concrete.
+        </p>
+      </header>
+
+      <div class="card inputs-card">
+        <h3 class="card-title">Fence size</h3>
+
+        <div class="field">
+          <label for="mat-length">Run length</label>
+          <div class="input-with-unit">
+            <input
+              type="number"
+              id="mat-length"
+              inputmode="decimal"
+              min="0"
+              step="any"
+              placeholder="e.g. 12"
+              autocomplete="off"
+            />
+            <span class="unit-suffix">m</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="mat-height">Fence height</label>
+          <div class="chip-row" role="group" aria-label="Common heights">
+            <button type="button" class="chip-btn" data-height="1500">1500</button>
+            <button type="button" class="chip-btn" data-height="1800">1800</button>
+            <button type="button" class="chip-btn" data-height="2100">2100</button>
+          </div>
+          <div class="input-with-unit">
+            <input
+              type="number"
+              id="mat-height"
+              inputmode="numeric"
+              min="0"
+              step="1"
+              placeholder="e.g. 1800"
+              autocomplete="off"
+            />
+            <span class="unit-suffix">mm</span>
+          </div>
+          <p class="hint">Common Colourbond heights &mdash; or type your own.</p>
+        </div>
+
+        <div class="field">
+          <label for="mat-cover">Panel cover width</label>
+          <div class="input-with-unit">
+            <input
+              type="number"
+              id="mat-cover"
+              inputmode="decimal"
+              min="0"
+              step="any"
+              placeholder="e.g. 762 or 820"
+              autocomplete="off"
+            />
+            <span class="unit-suffix">mm</span>
+          </div>
+          <p class="hint">Effective cover per panel (brands vary &mdash; check your steel).</p>
+        </div>
+      </div>
+
+      <div class="card inputs-card">
+        <h3 class="card-title">Posts &amp; rails</h3>
+
+        <div class="field">
+          <div class="field-label-row">
+            <span class="label-text">How to set posts</span>
+            <div class="segmented" role="group" aria-label="Post method">
+              <button type="button" class="seg-btn is-active" data-mat-post="maxbay" id="mat-post-maxbay">Max bay</button>
+              <button type="button" class="seg-btn" data-mat-post="posts" id="mat-post-posts">Posts</button>
+              <button type="button" class="seg-btn" data-mat-post="bays" id="mat-post-bays">Bays</button>
+            </div>
+          </div>
+
+          <div id="mat-maxbay-wrap">
+            <label for="mat-maxbay" class="sr-only">Max bay / post centres</label>
+            <div class="input-with-unit">
+              <input
+                type="number"
+                id="mat-maxbay"
+                inputmode="decimal"
+                min="0"
+                step="any"
+                placeholder="e.g. 2.4"
+                autocomplete="off"
+              />
+              <span class="unit-suffix">m max</span>
+            </div>
+            <p class="hint">Same formula as Post spacing &mdash; equal timber centres &le; max.</p>
+          </div>
+
+          <div id="mat-count-wrap" hidden>
+            <label for="mat-count" class="sr-only" id="mat-count-label">Number of posts</label>
+            <div class="input-with-unit">
+              <input
+                type="number"
+                id="mat-count"
+                inputmode="numeric"
+                min="1"
+                step="1"
+                placeholder="e.g. 6"
+                autocomplete="off"
+              />
+              <span class="unit-suffix" id="mat-count-suffix">posts</span>
+            </div>
+            <p class="hint" id="mat-count-hint">Enter posts directly (or switch to bays).</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="mat-rails">Rails per bay</label>
+          <div class="input-with-unit">
+            <input
+              type="number"
+              id="mat-rails"
+              inputmode="numeric"
+              min="1"
+              step="1"
+              value="2"
+              placeholder="e.g. 2"
+              autocomplete="off"
+            />
+            <span class="unit-suffix">rails</span>
+          </div>
+          <p class="hint">Usually 2 or 3 tracks per bay. Default 2.</p>
+        </div>
+
+        <div class="field field-toggle">
+          <label class="toggle-label" for="mat-caps">
+            <input type="checkbox" id="mat-caps" checked />
+            <span>Include post caps</span>
+          </label>
+          <p class="hint">One Colourbond post cap per station when on.</p>
+        </div>
+
+        <div class="field field-toggle">
+          <label class="toggle-label" for="mat-timber">
+            <input type="checkbox" id="mat-timber" />
+            <span>Colourbond posts on timber</span>
+          </label>
+          <p class="hint">Each station = 1 timber post + 1 Colourbond post. Max bay = timber centres.</p>
+        </div>
+
+        <div id="mat-timber-wrap" hidden>
+          <div class="field">
+            <label for="mat-timber-size">Timber post size</label>
+            <div class="input-with-unit">
+              <input
+                type="number"
+                id="mat-timber-size"
+                inputmode="numeric"
+                min="1"
+                step="1"
+                value="100"
+                placeholder="e.g. 100"
+                autocomplete="off"
+              />
+              <span class="unit-suffix">mm sq</span>
+            </div>
+            <p class="hint">Clear bay &asymp; centres &minus; timber width (rail piece length).</p>
+          </div>
+
+          <div class="field">
+            <label for="mat-fixings">Fixings per post</label>
+            <div class="input-with-unit">
+              <input
+                type="number"
+                id="mat-fixings"
+                inputmode="numeric"
+                min="0"
+                step="1"
+                value="4"
+                placeholder="e.g. 4"
+                autocomplete="off"
+              />
+              <span class="unit-suffix">fixings</span>
+            </div>
+            <p class="hint">Screws/bolts fixing each Colourbond post to timber. Default 4.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card results-card" id="mat-results" hidden>
+        <h3 class="card-title">Take-off quantities</h3>
+
+        <div class="qty-grid" id="mat-qty-grid"></div>
+
+        <div class="result-meta" id="mat-result-meta"></div>
+
+        <div class="assumption-note" id="mat-assumptions"></div>
+      </div>
+
+      <div class="card empty-card" id="mat-empty">
+        <p class="empty-icon" aria-hidden="true">&#x25A3;</p>
+        <p class="empty-title">Enter length and panel cover</p>
+        <p class="empty-body">Plus max bay (or posts/bays) and rails &mdash; you&rsquo;ll get a rounded-up take-off.</p>
+      </div>
+
+      <div class="card error-card" id="mat-error" hidden>
+        <p class="error-title" id="mat-error-title">Check your numbers</p>
+        <p class="error-body" id="mat-error-body"></p>
+      </div>
+
+      <details class="how-it-works">
+        <summary>How it works</summary>
+        <div class="how-body">
+          <p>
+            <strong>Panels</strong> = ceil(run length &divide; panel cover width). Cover is the effective width each panel adds along the run.
+          </p>
+          <p>
+            <strong>Posts</strong> from max bay: same as Post spacing (bays = ceil(length &divide; max), posts = bays + 1). Or enter posts/bays directly.
+          </p>
+          <p>
+            With <strong>Colourbond posts on timber</strong>: each station needs 1 timber post + 1 Colourbond post.
+            Caps apply to Colourbond posts. Optional fixings/post for timber&rarr;steel. Clear bay &asymp; centres &minus; timber width.
+          </p>
+          <p>
+            <strong>Caps</strong> = Colourbond posts (when included).
+          </p>
+          <p class="formula">
+            <strong>Rail pieces</strong> = rails per bay &times; bays<br />
+            <strong>Total rail length</strong> = run length &times; rails per bay
+          </p>
+          <p>
+            Rails are counted as per-bay pieces (cut &asymp; clear bay when on timber). Total length stays run &times; rails/bay.
+            Concrete is not included.
+          </p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ========== TIMBER PALING FENCE ========== -->
+    <section class="tool-panel" data-panel="timber" aria-labelledby="timber-title" hidden>
+      <header class="panel-header">
+        <h2 id="timber-title">Timber paling fence</h2>
+        <p class="panel-lead">
+          Lap-and-cap (double-sided lapped) palings on timber posts and rails. Posts, rails, palings and nails. No concrete.
+        </p>
+      </header>
+
+      <div class="card inputs-card">
+        <h3 class="card-title">Fence size</h3>
+
+        <div class="field">
+          <label for="tf-length">Run length</label>
+          <div class="input-with-unit">
+            <input type="number" id="tf-length" inputmode="decimal" min="0" step="any" placeholder="e.g. 10" autocomplete="off" />
+            <span class="unit-suffix">m</span>
+          </div>
+          <p class="hint">Straight-line length of the fence run.</p>
+        </div>
+
+        <div class="field">
+          <label for="tf-maxbay">Max bay / post centres</label>
+          <div class="input-with-unit">
+            <input type="number" id="tf-maxbay" inputmode="decimal" min="0" step="any" value="2.4" placeholder="e.g. 2.4" autocomplete="off" />
+            <span class="unit-suffix">m max</span>
+          </div>
+          <p class="hint">Same as Post spacing &mdash; equal centres that never exceed this.</p>
+        </div>
+
+        <div class="field">
+          <label for="tf-height">Fence height</label>
+          <div class="input-with-unit">
+            <input type="number" id="tf-height" inputmode="numeric" min="0" step="1" value="1800" placeholder="e.g. 1800" autocomplete="off" />
+            <span class="unit-suffix">mm</span>
+          </div>
+          <p class="hint">Paling length = fence height.</p>
+        </div>
+
+        <div class="field">
+          <label for="tf-post">Post size</label>
+          <div class="input-with-unit">
+            <input type="number" id="tf-post" inputmode="numeric" min="1" step="1" value="100" placeholder="e.g. 100" autocomplete="off" />
+            <span class="unit-suffix">mm sq</span>
+          </div>
+          <p class="hint">Square timber posts, e.g. 100 for 100&times;100.</p>
+        </div>
+      </div>
+
+      <div class="card inputs-card">
+        <h3 class="card-title">Palings &amp; rails</h3>
+
+        <div class="field">
+          <label for="tf-width">Paling width</label>
+          <div class="input-with-unit">
+            <input type="number" id="tf-width" inputmode="numeric" min="1" step="any" value="150" placeholder="e.g. 150" autocomplete="off" />
+            <span class="unit-suffix">mm</span>
+          </div>
+          <p class="hint">Common: 150 or 100 mm.</p>
+        </div>
+
+        <div class="field">
+          <label for="tf-lap">Minimum lap each side</label>
+          <div class="input-with-unit">
+            <input type="number" id="tf-lap" inputmode="numeric" min="1" step="any" value="25" placeholder="e.g. 25" autocomplete="off" />
+            <span class="unit-suffix">mm</span>
+          </div>
+          <p class="hint">How far each front paling laps onto the back palings either side. 25 mm min.</p>
+        </div>
+
+        <div class="field">
+          <label for="tf-rails">Rails per bay</label>
+          <div class="input-with-unit">
+            <input type="number" id="tf-rails" inputmode="numeric" min="1" step="1" value="3" placeholder="e.g. 3" autocomplete="off" />
+            <span class="unit-suffix">rails</span>
+          </div>
+          <p class="hint">Usually 3 for a 1800 paling fence.</p>
+        </div>
+
+        <div class="field">
+          <label for="tf-nails">Nails per paling per rail</label>
+          <div class="input-with-unit">
+            <input type="number" id="tf-nails" inputmode="numeric" min="0" step="1" value="2" placeholder="e.g. 2" autocomplete="off" />
+            <span class="unit-suffix">nails</span>
+          </div>
+          <p class="hint">2 nails &times; 3 rails = 6 per paling. Set 0 to skip.</p>
+        </div>
+
+        <div class="field field-toggle">
+          <label class="toggle-label" for="tf-plinth">
+            <input type="checkbox" id="tf-plinth" />
+            <span>Plinth / kickboard</span>
+          </label>
+          <p class="hint">One board per bay along the bottom (&asymp; centres long).</p>
+        </div>
+      </div>
+
+      <div class="card results-card" id="tf-results" hidden>
+        <h3 class="card-title">Take-off quantities</h3>
+
+        <div class="qty-grid" id="tf-qty-grid"></div>
+
+        <div class="result-meta" id="tf-result-meta"></div>
+
+        <div class="diagram-wrap" aria-hidden="true">
+          <svg id="tf-diagram" class="diagram" viewBox="0 0 400 270" role="img"></svg>
+        </div>
+        <p class="diagram-caption" id="tf-diagram-caption"></p>
+
+        <div class="assumption-note" id="tf-assumptions"></div>
+      </div>
+
+      <div class="card empty-card" id="tf-empty">
+        <p class="empty-icon" aria-hidden="true">|||</p>
+        <p class="empty-title">Enter run length</p>
+        <p class="empty-body">Defaults are set for 150 mm palings, 25 mm lap, 3 rails at 2.4 m max centres.</p>
+      </div>
+
+      <div class="card error-card" id="tf-error" hidden>
+        <p class="error-title" id="tf-error-title">Check your numbers</p>
+        <p class="error-body" id="tf-error-body"></p>
+      </div>
+
+      <details class="how-it-works">
+        <summary>How it works</summary>
+        <div class="how-body">
+          <p>
+            <strong>Lap and cap:</strong> a back row of palings with gaps, then a front row where each paling covers a gap
+            and laps onto the back palings either side.
+          </p>
+          <p class="formula">
+            <strong>Back gap</strong> = paling width &minus; 2 &times; lap (150 &minus; 50 = 100 mm)<br />
+            <strong>Each paling adds</strong> = width &minus; lap (125 mm), so a back + front pair covers 250 mm<br />
+            <strong>Palings per metre</strong> = 1000 &divide; (width &minus; lap) (8 for 150 / 25)<br />
+            <strong>Total palings</strong> = 1 + ceil((run &minus; width) &divide; (width &minus; lap))
+          </p>
+          <p>
+            Palings are counted <strong>along the full run</strong>, starting with a back paling at the start of the run.
+            They run straight past the posts (the palings are fixed to the rails, not between posts), so there&rsquo;s no
+            waste or doubling up at each post. Per bay is an average for reference.
+          </p>
+          <p>
+            <strong>Posts</strong>: bays = ceil(length &divide; max), centres = length &divide; bays, posts = bays + 1 (same as Post spacing).
+          </p>
+          <p class="formula">
+            <strong>Rail pieces</strong> = rails per bay &times; bays (each &asymp; centres, joined on posts)<br />
+            <strong>Total rail length</strong> = run length &times; rails per bay<br />
+            <strong>Nails</strong> = palings &times; rails &times; nails per rail
+          </p>
+          <p>Buy a few spare palings for splits and offcuts. Concrete is not included.</p>
+        </div>
+      </details>
+    </section>
+  </main>
+  </div>
+  <footer class="site-footer">
+    <p>Fencing quotes &middot; saved in this browser only &middot; AU &middot; nothing is sent</p>
+  </footer>
+  <div id="print-sheet" class="print-sheet" aria-hidden="true"></div>
+  <dialog id="confirm-dialog" aria-labelledby="confirm-message">
+    <p id="confirm-message"></p>
+    <div class="button-row">
+      <button type="button" class="btn" id="confirm-cancel">Cancel</button>
+      <button type="button" class="btn btn-danger" id="confirm-ok" data-testid="confirm-ok">Delete</button>
+    </div>
+  </dialog>
+  <dialog id="import-dialog" aria-labelledby="import-summary">
+    <h2>Import backup</h2>
+    <p id="import-summary"></p>
+    <ul id="import-errors"></ul>
+    <div class="button-row">
+      <button type="button" class="btn" id="import-cancel">Cancel</button>
+      <button type="button" class="btn" id="import-merge" data-testid="import-merge">Add to this device</button>
+      <button type="button" class="btn btn-danger" id="import-replace" data-testid="import-replace">Replace quotes on this device</button>
+    </div>
+  </dialog>
+  <input type="file" id="import-file" accept="application/json,.json" hidden />
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
